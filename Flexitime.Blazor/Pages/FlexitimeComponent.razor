@@ -1,0 +1,109 @@
+﻿@page "/"
+@using System.Text.Json.Serialization
+@using System.Text.Json
+
+@inject FlexitimeService FlexitimeService
+@inject IJSRuntime JS
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+
+<h3>Flexitime</h3>
+
+<div class="row">
+    <div class="col-2">
+        <p>Day</p>
+    </div>
+    <div class="col-2">
+        <p>Start</p>
+    </div>
+    <div class="col-2">
+        <p>End</p>
+    </div>
+    <div class="col-2">
+        <p>Break</p>
+    </div>
+    <div class="col-2">
+        <p>Summary</p>
+    </div>
+</div>
+
+
+@if (_data != null)
+{
+    <EditForm EditContext="@EditContext">
+        <FlexitimeValidator @ref="_flexitimeValidator" />
+        @foreach (Day day in FlexitimeService.Days)
+        {
+            <div class="row">
+                <div class="col-2">
+                    <p>@day</p>
+                </div>
+                <div class="col-2">
+                    <input type="time" name="asd" @bind="_data[day].StartTime" @bind:event="oninput" @onchange="@(e => FieldChanged(e, day))" />
+                </div>
+                <div class="col-2">
+                    <input type="time" name="asd2" @bind="_data[day].EndTime" @bind:event="oninput" @onchange="@(e => FieldChanged(e, day))" />
+                </div>
+                <div class="col-2">
+                    <input type="time" name="asd3" @bind="_data[day].BreakTime" @bind:event="oninput" @onchange="@(e => FieldChanged(e, day))" />
+                </div>
+                <div class="col-2">
+                    <p>@_data[day].WorkedTimeDayString</p>
+                </div>
+            </div>
+        }
+        <div class="row">
+            <div class="col-12">
+                <p>Total worked time this week is @_data.WorkedTimeWeekString</p>
+                <ValidationSummary />
+            </div>
+        </div>
+    </EditForm>
+}
+
+@code {
+    FlexitimeWeekData _data;
+    FlexitimeValidator _flexitimeValidator;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            FlexitimeService.Data = JsonSerializer.Deserialize<FlexitimeWeekData>(await LocalStorage.GetItemAsStringAsync("data"));
+            _data = FlexitimeService.Data;
+        }
+        catch (Exception e)
+        {
+            await JS.InvokeAsync<string>("console.log", e.Message);
+            _data = FlexitimeService.Data;
+            _data.WorkedTime = TimeSpan.FromHours(37.5);
+            foreach (FlexitimeDayData day in _data)
+            {
+                day.StartTime = DateTime.Today + TimeSpan.FromHours(7);
+                day.EndTime = DateTime.MinValue + TimeSpan.FromHours(15);
+                day.BreakTime = DateTime.MinValue + TimeSpan.FromMinutes(30);
+            }
+        }
+        EditContext = new EditContext(_data);
+        EditContext.OnFieldChanged += EditContext_OnFieldChanged;
+        FlexitimeService.Validate();
+    }
+
+    private void EditContext_OnFieldChanged(object sender, FieldChangedEventArgs e)
+    {
+        JS.InvokeAsync<string>("console.log", "fuck");
+    }
+
+    public EditContext EditContext { get; set; }
+
+    private async void FieldChanged(ChangeEventArgs arg, Day day)
+    {
+        await LocalStorage.SetItemAsync("data", JsonSerializer.Serialize(_data));
+        _flexitimeValidator.ClearErrors();
+
+        Dictionary<Day, List<string>> errors = FlexitimeService.Validate();
+        _flexitimeValidator.DisplayErrors(errors);
+        await JS.InvokeAsync<string>("console.log", "saadasdasdasd");
+        await JS.InvokeAsync<string>("console.log", arg.Value, day);
+    }
+
+}
