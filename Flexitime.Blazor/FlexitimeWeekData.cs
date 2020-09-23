@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace Flexitime.Blazor
@@ -10,8 +11,8 @@ namespace Flexitime.Blazor
     {
         private Dictionary<Day, FlexitimeDayData> _data = new Dictionary<Day, FlexitimeDayData>();
 
-        public TimeSpan WorkedTime { get; set; } = new TimeSpan();
-        public string WorkedTimeWeekString => $"{(int)WorkedTime.TotalHours} hours {WorkedTime.Minutes} minutes.";
+        public TimeSpan WorkedTime { get; set; }
+        public string WorkedTimeWeekString => $"{(int)Math.Floor(WorkedTime.TotalHours):00}:{WorkedTime.Minutes:00}";
 
         public FlexitimeWeekData()
         {
@@ -48,7 +49,21 @@ namespace Flexitime.Blazor
                     errors[day] = dayErrors;
                 }
             }
+
+            WorkedTime = CalculateAllWorkedTime(_data.Values);
             return errors;
+        }
+
+        private TimeSpan CalculateAllWorkedTime(IEnumerable<FlexitimeDayData> dayDatas)
+        {
+            double minutes = 0;
+            foreach (FlexitimeDayData dayData in dayDatas)
+            {
+                Debug.WriteLine($"{dayData} hours is {dayData.WorkedTimeDay.Hours} and minutes is {dayData.WorkedTimeDay.Minutes}.");
+                minutes += dayData.WorkedTimeDay.TotalMinutes;
+            }
+            Debug.WriteLine($"minutes = {minutes}");
+            return TimeSpan.FromMinutes(minutes);
         }
     }
 
