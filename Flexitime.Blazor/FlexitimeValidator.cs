@@ -43,7 +43,8 @@ namespace Flexitime.Blazor
         {
             foreach ((string key, List<string> value) in errors)
             {
-                _messageStore.Add(CurrentEditContext.Field(key), value);
+                IEnumerable<string> x = value.Select(v => v + $" [{key}]");
+                _messageStore.Add(CurrentEditContext.Field(key), x);
             }
 
             CurrentEditContext.NotifyValidationStateChanged();
