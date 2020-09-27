@@ -32,18 +32,21 @@
             <FlexitimeValidator @ref="_flexitimeValidator" />
             @foreach (Day day in FlexitimeService.Days)
             {
+                string errorClass = Errors != null && Errors.ContainsKey(day) ? "is-invalid" : "";
+                ;
+
                 <div class="row">
                     <div class="form-group col-lg-2">
                         <p class="text-right">@day</p>
                     </div>
                     <div class="form-group col-lg-2">
-                        <input class="form-control" type="time" name="asd" @bind="_data[day].StartTime" @bind:event="oninput" @onchange="@(e => FieldChanged(e, day))" />
+                        <input class="form-control @errorClass" type="time" name="asd" @bind="_data[day].StartTime" @bind:event="oninput" @onchange="@(e => FieldChanged(e, day))" />
                     </div>
                     <div class="form-group col-lg-2">
-                        <input class="form-control" type="time" name="asd2" @bind="_data[day].EndTime" @bind:event="oninput" @onchange="@(e => FieldChanged(e, day))" />
+                        <input class="form-control @errorClass" type="time" name="asd2" @bind="_data[day].EndTime" @bind:event="oninput" @onchange="@(e => FieldChanged(e, day))" />
                     </div>
                     <div class="form-group col-lg-2">
-                        <input class="form-control" type="time" name="asd3" @bind="_data[day].BreakTime" @bind:event="oninput" @onchange="@(e => FieldChanged(e, day))" />
+                        <input class="form-control @errorClass" type="time" name="asd3" @bind="_data[day].BreakTime" @bind:event="oninput" @onchange="@(e => FieldChanged(e, day))" />
                     </div>
                     <div class="form-group col-lg-2 align-middle">
                         <p>@_data[day].WorkedTimeDayString</p>
@@ -64,6 +67,8 @@
     FlexitimeValidator _flexitimeValidator;
 
     public EditContext EditContext { get; set; }
+
+    Dictionary<Day, List<string>> Errors { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -98,8 +103,8 @@
     {
         _flexitimeValidator.ClearErrors();
 
-        Dictionary<Day, List<string>> errors = FlexitimeService.Validate();
-        _flexitimeValidator.DisplayErrors(errors);
+        Errors = FlexitimeService.Validate();
+        _flexitimeValidator.DisplayErrors(Errors);
         StateHasChanged();
     }
 }
