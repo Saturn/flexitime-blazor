@@ -32,7 +32,7 @@
         <FlexitimeValidator @ref="_flexitimeValidator" />
         @foreach (Day day in FlexitimeService.Days)
         {
-            string errorClass = Errors != null && Errors.ContainsKey(day) ? "is-invalid" : "";
+            string errorClass = Errors.ContainsKey(day) ? "is-invalid" : "";
             ;
 
             <div class="row">
@@ -68,7 +68,7 @@
 
     public EditContext EditContext { get; set; }
 
-    Dictionary<Day, List<string>> Errors { get; set; }
+    Dictionary<Day, List<string>> Errors { get; set; } = new Dictionary<Day, List<string>>();
 
     protected override async Task OnInitializedAsync()
     {
