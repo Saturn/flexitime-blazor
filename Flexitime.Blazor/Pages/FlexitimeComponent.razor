@@ -10,7 +10,7 @@
 
     <div class="row d-none d-lg-flex d-xl-flex">
         <div class="col-lg-2">
-            <p>Day</p>
+            <p class="text-right">Day</p>
         </div>
         <div class="col-lg-2">
             <p>Start</p>
@@ -34,7 +34,7 @@
             {
                 <div class="row">
                     <div class="form-group col-lg-2">
-                        <p>@day</p>
+                        <p class="text-right">@day</p>
                     </div>
                     <div class="form-group col-lg-2">
                         <input class="form-control" type="time" name="asd" @bind="_data[day].StartTime" @bind:event="oninput" @onchange="@(e => FieldChanged(e, day))" />
