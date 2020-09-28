@@ -25,6 +25,18 @@ namespace Flexitime.Blazor
             return Data.Validate();
         }
 
+        public async Task LoadData()
+        {
+            foreach (Day day in Days)
+            {
+                string key = $"data-{day}";
+                if (!await _localStorageService.ContainKeyAsync(key))
+                    continue;
+                FlexitimeDayData dayData = JsonSerializer.Deserialize<FlexitimeDayData>(await _localStorageService.GetItemAsStringAsync(key));
+                Data[day] = dayData;
+            }
+        }
+
         public async Task SaveDay(FlexitimeDayData dayData)
         {
             await _localStorageService.SetItemAsync($"data-{dayData.Day}", JsonSerializer.Serialize(Data[dayData.Day]));

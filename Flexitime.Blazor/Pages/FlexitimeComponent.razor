@@ -79,21 +79,13 @@
         _data = FlexitimeService.Data;
         EditContext = new EditContext(_data);
         ApplyDefaultDateTimeValues(_data);
-        foreach (Day day in FlexitimeService.Days)
-        {
-            string key = $"data-{day}";
-            if (!await LocalStorage.ContainKeyAsync(key))
-                continue;
-            FlexitimeDayData dayData = JsonSerializer.Deserialize<FlexitimeDayData>(await LocalStorage.GetItemAsStringAsync(key));
-            FlexitimeService.Data[day] = dayData;
-        }
+        await FlexitimeService.LoadData();
         FlexitimeService.Validate();
         RunValidation();
     }
 
     private async void FieldChanged(ChangeEventArgs arg, Day day)
     {
-        await JS.InvokeAsync<string>("console.log", "changed");
         await FlexitimeService.SaveDay(FlexitimeService.Data[day]);
         RunValidation();
     }
