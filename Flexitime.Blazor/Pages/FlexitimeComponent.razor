@@ -36,7 +36,7 @@
 
             <div class="row">
                 <div class="form-group col-lg-2">
-                    <p class="text-right">@day</p>
+                    <p class="text-right font-weight-bold">@day</p>
                 </div>
                 <div class="form-group col-lg-2">
                     <input class="form-control @errorClass" type="time" name="asd" @bind="_data[day].StartTime" @bind:event="oninput" @onchange="@(e => FieldChanged(e, day))" />
@@ -48,19 +48,19 @@
                     <input class="form-control @errorClass" type="time" name="asd3" @bind="_data[day].BreakTime" @bind:event="oninput" @onchange="@(e => FieldChanged(e, day))" />
                 </div>
                 <div class="form-group col-lg-2">
-                    <p>@_data[day].WorkedTimeDayString</p>
+                    <p class="font-weight-bold">@_data[day].WorkedTimeDayString</p>
                 </div>
             </div>
         }
         <div class="row">
             <div class="col-12">
-                <p>Total worked time this week is @_data.WorkedTimeWeekString</p>
+                <p>Total worked time this week is <span class="font-weight-bold">@_data.WorkedTimeWeekString</span></p>
                 <ValidationSummary />
             </div>
         </div>
         <div class="row">
             <div class="col-12">
-                <button class="btn btn-primary" @onclick="ResetButtonClick">Reset</button>
+                <button class="btn btn-primary btn-sm" @onclick="ResetButtonClick">Reset</button>
             </div>
         </div>
     </EditForm>
