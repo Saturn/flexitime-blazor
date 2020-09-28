@@ -25,7 +25,11 @@ namespace Flexitime.Blazor
         public FlexitimeDayData this[Day day]
         {
             get => _data[day];
-            set => _data[day] = value;
+            set
+            {
+                value.Day = day;
+                _data[day] = value;
+            }
         }
 
         public IEnumerator<FlexitimeDayData> GetEnumerator()

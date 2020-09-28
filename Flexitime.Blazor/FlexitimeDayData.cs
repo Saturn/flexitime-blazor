@@ -8,6 +8,7 @@ namespace Flexitime.Blazor
 {
     public class FlexitimeDayData
     {
+        public Day Day { get; set; }
         public DateTime StartTime { get; set; } = new DateTime();
         public DateTime EndTime { get; set; } = new DateTime();
         public DateTime BreakTime { get; set; } = new DateTime();
