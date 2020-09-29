@@ -17,9 +17,9 @@ namespace Flexitime.Blazor
 
         public List<string> Validate()
         {
-            TimeSpan startTimeSpan = new TimeSpan(0, StartTime.Hour, StartTime.Minute, 0);
-            TimeSpan endTimeSpan = new TimeSpan(0, EndTime.Hour, EndTime.Minute, 0);
-            TimeSpan breakTimeSpan = new TimeSpan(0, BreakTime.Hour, BreakTime.Minute, 0);
+            TimeSpan startTimeSpan = StartTime.TimeOfDay;
+            TimeSpan endTimeSpan = EndTime.TimeOfDay;
+            TimeSpan breakTimeSpan = BreakTime.TimeOfDay;
 
             WorkedTimeDay = endTimeSpan - startTimeSpan - breakTimeSpan;
             List<string> errors = new List<string>();
