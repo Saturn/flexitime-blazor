@@ -60,13 +60,7 @@ namespace Flexitime.Blazor
 
         private TimeSpan CalculateAllWorkedTime(IEnumerable<FlexitimeDayData> dayDatas)
         {
-            double minutes = 0;
-            foreach (FlexitimeDayData dayData in dayDatas)
-            {
-                Debug.WriteLine($"{dayData} hours is {dayData.WorkedTimeDay.Hours} and minutes is {dayData.WorkedTimeDay.Minutes}.");
-                minutes += dayData.WorkedTimeDay.TotalMinutes;
-            }
-            Debug.WriteLine($"minutes = {minutes}");
+            double minutes = dayDatas.Sum(dayData => dayData.WorkedTimeDay.TotalMinutes);
             return TimeSpan.FromMinutes(minutes);
         }
     }
